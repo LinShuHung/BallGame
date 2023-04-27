@@ -11,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,6 +24,7 @@ public class BallGameView extends View {
     private boolean isInitBallView;
     private Timer timer = new Timer();
     private RefreshTask refreshTask = new RefreshTask();
+    private LinkedList<Ball> balls = new LinkedList<>();
 
     //inner class
     private class RefreshTask extends TimerTask{
@@ -62,11 +64,17 @@ public class BallGameView extends View {
             initBallView();
             isInitBallView = true;
         }
-        canvas.drawBitmap(bmpBalls[3], 0, 0, null);
+        for(Ball ball:balls){
+            canvas.drawBitmap(bmpBalls[ball.getWhichBall()], ball.getBallX(), ball.getBallY(), null);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Ball ball = new Ball(this.viewW, this.viewH, this.ballW, this.ballW,
+                (event.getX() + ballW/2), (event.getY() + ballH/2));
+        balls.add(ball);
+        timer.schedule(ball, 0, 30);
         return super.onTouchEvent(event);
     }
 }
